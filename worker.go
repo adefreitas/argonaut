@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func work(generator AssetConfigGenerator, index int16) {
+func work(generator AssetConfigGenerator, index int) {
 	generationData := generator.generate()
 	outputFramesDirPath := fmt.Sprintf("%s/raw/%d", OUTPUT_FRAMES_DIR, index)
 	outputVideoDirPath := fmt.Sprintf("%s/%d", OUTPUT_VIDEO_DIR, index)
@@ -52,4 +52,6 @@ func work(generator AssetConfigGenerator, index int16) {
 	if err != nil {
 		fmt.Println("Couldnt write file", err)
 	}
+
+	combineAttributes(generationData.frames, index)
 }

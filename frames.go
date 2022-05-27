@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"image"
 	"image/draw"
+	"image/jpeg"
 	"image/png"
 	"os"
+	"sync"
 )
 
 func extractFrame(framePath string) image.Image {
@@ -17,12 +19,12 @@ func extractFrame(framePath string) image.Image {
 
 	defer existingImageFile.Close()
 
-	imageData, imageType, err := image.Decode(existingImageFile)
-	if err != nil {
-		fmt.Printf("Error decoding image %w\n"+framePath, err)
+	_, _, decodingError := image.Decode(existingImageFile)
+	if decodingError != nil {
+		fmt.Printf("Error decoding image %w\n"+framePath, decodingError)
 	}
-	fmt.Println(imageData)
-	fmt.Println(imageType)
+	// fmt.Println(imageData)
+	// fmt.Println(imageType)
 
 	existingImageFile.Seek(0, 0)
 
@@ -30,7 +32,7 @@ func extractFrame(framePath string) image.Image {
 	if err != nil {
 		fmt.Printf("Error decoding png image %w\n"+framePath, err)
 	}
-	fmt.Println(loadedImage)
+	// fmt.Println(loadedImage)
 	return loadedImage
 }
 
@@ -38,7 +40,8 @@ func extractBackground() image.Image {
 	return extractFrame(INPUT_DIR + "/background.png")
 }
 
-func combinteAttributesForFrame(frames Frames, prefix int16, frameNumber int16) {
+func combineAttributesForFrame(frames Frames, prefix int, frameNumber int, wg *sync.WaitGroup) {
+	// defer wg.Done()
 	generatedFrames := make([]image.Image, 0)
 	generatedFrames = append(generatedFrames, extractFrame(frames.aura[frameNumber]))
 	generatedFrames = append(generatedFrames, extractFrame(frames.blips[frameNumber]))
@@ -53,16 +56,56 @@ func combinteAttributesForFrame(frames Frames, prefix int16, frameNumber int16) 
 		draw.Draw(bgImage, img.Bounds(), img, image.ZP, draw.Over)
 	}
 
-	path := fmt.Sprintf("%s/raw/%d/%d_%d.png", OUTPUT_FRAMES_DIR, prefix, prefix, frameNumber)
+	path := fmt.Sprintf("%s/raw/%d/%d_%d.jpeg", OUTPUT_FRAMES_DIR, prefix, prefix, frameNumber)
 	out, err := os.Create(path)
 	if err != nil {
 		fmt.Printf("Error creating image file: %s\n", path)
 	}
 
-	err = png.Encode(out, bgImage)
+	err = jpeg.Encode(out, bgImage, &jpeg.Options{Quality: 60})
 	if err != nil {
 		fmt.Printf("Error creating image file: %+v\n", err)
 		return
 	}
+}
 
+func combineAttributes(frames Frames, prefix int) {
+	fmt.Println("Generating frames for asset", prefix)
+	var wg sync.WaitGroup
+	paralelization := 50
+	wg.Add(paralelization)
+	c := make(chan int)
+	lo, hi := 0, 199
+	// Creating an array from 0 to 200 for paralelization
+	frameNumbers := make([]int, hi-lo+1)
+	for i := range frameNumbers {
+		frameNumbers[i] = i + lo
+	}
+	// List creating ends
+
+	for i := 0; i < paralelization; i++ {
+		go func(c chan int) {
+			for {
+				v, more := <-c
+				if more == false {
+					wg.Done()
+					return
+				}
+				combineAttributesForFrame(frames, prefix, v, &wg)
+			}
+		}(c)
+	}
+	// for i = 0; i < 200; i++ {
+	// 	go combineAttributesForFrame(frames, prefix, i, &wg)
+	// }
+
+	// Adding frame numbers to the channel to be consumed by the loop above
+	for _, a := range frameNumbers {
+		c <- a
+	}
+	// closing channel
+	close(c)
+	fmt.Println("Waiting for paralel tasks to finish")
+	wg.Wait()
+	fmt.Println("Paralel tasks done!")
 }

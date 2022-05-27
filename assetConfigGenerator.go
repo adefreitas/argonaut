@@ -202,7 +202,7 @@ func getFiles(attribute string, category string) []string {
 	capitalisedAttributeName := strings.Title(attribute)
 	for i := 0; i < 200; i++ {
 		frameNumber := fmt.Sprintf("%05d", i)
-		images[i] = INPUT_ATTRIBUTES_DIR + "/" + capitalisedAttributeName + "/" + category + "/" + category + "_" + frameNumber
+		images[i] = INPUT_ATTRIBUTES_DIR + "/" + capitalisedAttributeName + "/" + category + "/" + category + "_" + frameNumber + ".png"
 	}
 	return images
 }
