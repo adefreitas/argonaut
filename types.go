@@ -83,3 +83,23 @@ type Frames struct {
 	gems     AttributeFrames
 	blips    AttributeFrames
 }
+
+type ManifestAttributeData struct {
+	name   string
+	rarity float32
+}
+
+type ManifestData struct {
+	hands    ManifestAttributeData
+	aura     ManifestAttributeData
+	watchers ManifestAttributeData
+	stairs   ManifestAttributeData
+	arches   ManifestAttributeData
+	gems     ManifestAttributeData
+	blips    ManifestAttributeData
+}
+
+type GenerationData struct {
+	frames Frames
+	data   ManifestData
+}

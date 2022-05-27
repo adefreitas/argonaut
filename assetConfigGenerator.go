@@ -231,3 +231,32 @@ func (g AssetConfigGenerator) init(maxAmount int16, namedManifest NamedManifest)
 	g.NamedManifest = namedManifest
 	g.initialiseCountersAndSettings()
 }
+
+func (g AssetConfigGenerator) generate() GenerationData {
+	var data ManifestData
+	var frames Frames
+	hands := g.findAttributeCategoryByCounter(HANDS)
+	aura := g.findAttributeCategoryByCounter(AURA)
+	watchers := g.findAttributeCategoryByCounter(WATCHERS)
+	stairs := g.findAttributeCategoryByCounter(STAIRS)
+	arches := g.findAttributeCategoryByCounter(ARCHES)
+	gems := g.findAttributeCategoryByCounter(GEMS)
+	blips := g.findAttributeCategoryByCounter(BLIPS)
+	data.hands = ManifestAttributeData{name: hands.name, rarity: hands.rarity}
+	data.aura = ManifestAttributeData{name: aura.name, rarity: aura.rarity}
+	data.watchers = ManifestAttributeData{name: watchers.name, rarity: watchers.rarity}
+	data.stairs = ManifestAttributeData{name: stairs.name, rarity: stairs.rarity}
+	data.arches = ManifestAttributeData{name: arches.name, rarity: arches.rarity}
+	data.gems = ManifestAttributeData{name: gems.name, rarity: gems.rarity}
+	data.blips = ManifestAttributeData{name: blips.name, rarity: blips.rarity}
+
+	frames.hands = hands.files
+	frames.aura = aura.files
+	frames.watchers = watchers.files
+	frames.stairs = stairs.files
+	frames.arches = arches.files
+	frames.gems = gems.files
+	frames.blips = blips.files
+
+	return GenerationData{frames: frames, data: data}
+}
