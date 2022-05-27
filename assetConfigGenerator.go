@@ -196,25 +196,15 @@ func (g *AssetConfigGenerator) setCounterForAttribute(attribute AttributeType, v
 	}
 }
 
-func (g *AssetConfigGenerator) updateCounters(attribute AttributeType) {
-	nextAttribute := getNextAttribute(attribute)
-	isAttributeIndexExceeded := nextAttribute == HANDS
-	currentCounterValue := g.getCounterForAttribute(attribute)
-	isAttributeCounterInAcceptableRange := currentCounterValue < g.maxAmount
-
-	fmt.Println("Updating counters for attribute", attribute, currentCounterValue)
-
-	if isAttributeIndexExceeded {
-		return
-	}
-
-	if isAttributeCounterInAcceptableRange {
-		fmt.Println("Updating attribute counter", attribute, currentCounterValue, currentCounterValue+1)
-		g.incrementCounterForAttribute(attribute)
-	} else {
-		g.setCounterForAttribute(attribute, 0)
-		g.updateCounters(nextAttribute)
-	}
+func (g *AssetConfigGenerator) updateCounters() {
+	g.counters.hands++
+	g.counters.aura++
+	g.counters.watchers++
+	g.counters.stairs++
+	g.counters.arches++
+	g.counters.gems++
+	g.counters.blips++
+	g.counters.arches++
 	g.restartCountersIfNeeded()
 }
 
@@ -277,6 +267,6 @@ func (g *AssetConfigGenerator) generate() GenerationData {
 	frames.gems = gems.files
 	frames.blips = blips.files
 
-	g.updateCounters(HANDS)
+	g.updateCounters()
 	return GenerationData{frames: frames, data: data}
 }
