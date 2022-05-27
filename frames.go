@@ -72,7 +72,7 @@ func combineAttributesForFrame(frames Frames, prefix int, frameNumber int, wg *s
 func combineAttributes(frames Frames, prefix int) {
 	fmt.Println("Generating frames for asset", prefix)
 	var wg sync.WaitGroup
-	paralelization := 50
+	paralelization := 20
 	wg.Add(paralelization)
 	c := make(chan int)
 	lo, hi := 0, 199
@@ -105,7 +105,7 @@ func combineAttributes(frames Frames, prefix int) {
 	}
 	// closing channel
 	close(c)
-	fmt.Println("Waiting for paralel tasks to finish")
+	fmt.Println("Waiting for paralel frame creation to finish for asset", prefix)
 	wg.Wait()
-	fmt.Println("Paralel tasks done!")
+	fmt.Println("Paralel frame creation done for asset", prefix)
 }

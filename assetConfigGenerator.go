@@ -154,6 +154,27 @@ func (g *AssetConfigGenerator) getCategoriesForAttribute(attribute AttributeType
 	}
 }
 
+func (g *AssetConfigGenerator) incrementCounterForAttribute(attribute AttributeType) {
+	switch attribute {
+	case HANDS:
+		g.counters.hands++
+	case AURA:
+		g.counters.aura++
+	case WATCHERS:
+		g.counters.watchers++
+	case STAIRS:
+		g.counters.stairs++
+	case ARCHES:
+		g.counters.arches++
+	case GEMS:
+		g.counters.gems++
+	case BLIPS:
+		g.counters.blips++
+	default:
+		fmt.Println("Attribute not found when increasing counter")
+	}
+}
+
 func (g *AssetConfigGenerator) setCounterForAttribute(attribute AttributeType, value int16) {
 	switch attribute {
 	case HANDS:
@@ -189,7 +210,7 @@ func (g *AssetConfigGenerator) updateCounters(attribute AttributeType) {
 
 	if isAttributeCounterInAcceptableRange {
 		fmt.Println("Updating attribute counter", attribute, currentCounterValue, currentCounterValue+1)
-		g.setCounterForAttribute(attribute, currentCounterValue+1)
+		g.incrementCounterForAttribute(attribute)
 	} else {
 		g.setCounterForAttribute(attribute, 0)
 		g.updateCounters(nextAttribute)
