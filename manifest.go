@@ -47,6 +47,5 @@ func readManifest() NamedManifest {
 		}
 	}
 
-	fmt.Println("Named manifest", namedManifest)
 	return namedManifest
 }

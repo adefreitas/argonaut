@@ -9,4 +9,6 @@ func main() {
 	manifest := readManifest()
 	var generator AssetConfigGenerator
 	generator.init(4, manifest)
+	// fmt.Println(generator.generate())
+	// generator.generate()
 }

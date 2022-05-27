@@ -13,14 +13,13 @@ type AssetConfigGenerator struct {
 	maxAmount     int16
 }
 
-func (g AssetConfigGenerator) getCategorySettings(categories []Category) []CategoryConfig {
+func (g *AssetConfigGenerator) getCategorySettings(categories []Category) []CategoryConfig {
 	var counter int16 = 0
 	var categoryConfigs = make([]CategoryConfig, len(categories))
 	var totalRarities float32
 	for i := 0; i < len(categories); i++ {
 		totalRarities += categories[i].Rarity
 	}
-	fmt.Println(categories)
 	for i := 0; i < len(categories); i++ {
 		category := categories[i]
 		total := int16(math.Ceil(
@@ -38,7 +37,7 @@ func (g AssetConfigGenerator) getCategorySettings(categories []Category) []Categ
 	return categoryConfigs
 }
 
-func (g AssetConfigGenerator) restartCountersIfNeeded() {
+func (g *AssetConfigGenerator) restartCountersIfNeeded() {
 	haveAllCountersReachedTheirMaximum := g.counters.arches == g.maxAmount &&
 		g.counters.aura == g.maxAmount &&
 		g.counters.blips == g.maxAmount &&
@@ -57,8 +56,7 @@ func (g AssetConfigGenerator) restartCountersIfNeeded() {
 	}
 }
 
-func (g AssetConfigGenerator) initialiseCountersAndSettingForAttribute(attribute AttributeType) {
-
+func (g *AssetConfigGenerator) initialiseCountersAndSettingForAttribute(attribute AttributeType) {
 	switch attribute {
 	case HANDS:
 		g.settings.hands.categories = g.getCategorySettings(g.NamedManifest.hands.Categories)
@@ -80,7 +78,7 @@ func (g AssetConfigGenerator) initialiseCountersAndSettingForAttribute(attribute
 
 }
 
-func (g AssetConfigGenerator) initialiseCountersAndSettings() {
+func (g *AssetConfigGenerator) initialiseCountersAndSettings() {
 	g.initialiseCountersAndSettingForAttribute(HANDS)
 	g.initialiseCountersAndSettingForAttribute(AURA)
 	g.initialiseCountersAndSettingForAttribute(WATCHERS)
@@ -112,7 +110,7 @@ func getNextAttribute(attribute AttributeType) AttributeType {
 	}
 }
 
-func (g AssetConfigGenerator) getCounterForAttribute(attribute AttributeType) int16 {
+func (g *AssetConfigGenerator) getCounterForAttribute(attribute AttributeType) int16 {
 	switch attribute {
 	case HANDS:
 		return g.counters.hands
@@ -134,7 +132,7 @@ func (g AssetConfigGenerator) getCounterForAttribute(attribute AttributeType) in
 	}
 }
 
-func (g AssetConfigGenerator) getCategoriesForAttribute(attribute AttributeType) []CategoryConfig {
+func (g *AssetConfigGenerator) getCategoriesForAttribute(attribute AttributeType) []CategoryConfig {
 	switch attribute {
 	case HANDS:
 		return g.settings.hands.categories
@@ -156,7 +154,7 @@ func (g AssetConfigGenerator) getCategoriesForAttribute(attribute AttributeType)
 	}
 }
 
-func (g AssetConfigGenerator) setCounterForAttribute(attribute AttributeType, value int16) {
+func (g *AssetConfigGenerator) setCounterForAttribute(attribute AttributeType, value int16) {
 	switch attribute {
 	case HANDS:
 		g.counters.hands = value
@@ -177,7 +175,7 @@ func (g AssetConfigGenerator) setCounterForAttribute(attribute AttributeType, va
 	}
 }
 
-func (g AssetConfigGenerator) updateCounters(attribute AttributeType) {
+func (g *AssetConfigGenerator) updateCounters(attribute AttributeType) {
 	nextAttribute := getNextAttribute(attribute)
 	isAttributeIndexExceeded := nextAttribute == HANDS
 	currentCounterValue := g.getCounterForAttribute(attribute)
@@ -209,7 +207,7 @@ func getFiles(attribute string, category string) []string {
 	return images
 }
 
-func (g AssetConfigGenerator) findAttributeCategoryByCounter(attribute AttributeType) CategoryRenderingDetails {
+func (g *AssetConfigGenerator) findAttributeCategoryByCounter(attribute AttributeType) CategoryRenderingDetails {
 	var category CategoryConfig
 	counter := g.getCounterForAttribute(attribute)
 	categories := g.getCategoriesForAttribute(attribute)
@@ -218,7 +216,6 @@ func (g AssetConfigGenerator) findAttributeCategoryByCounter(attribute Attribute
 			category = categories[i]
 		}
 	}
-
 	return CategoryRenderingDetails{
 		name:   category.name,
 		files:  getFiles(string(attribute), category.name),
@@ -226,13 +223,13 @@ func (g AssetConfigGenerator) findAttributeCategoryByCounter(attribute Attribute
 	}
 }
 
-func (g AssetConfigGenerator) init(maxAmount int16, namedManifest NamedManifest) {
+func (g *AssetConfigGenerator) init(maxAmount int16, namedManifest NamedManifest) {
 	g.maxAmount = maxAmount
 	g.NamedManifest = namedManifest
 	g.initialiseCountersAndSettings()
 }
 
-func (g AssetConfigGenerator) generate() GenerationData {
+func (g *AssetConfigGenerator) generate() GenerationData {
 	var data ManifestData
 	var frames Frames
 	hands := g.findAttributeCategoryByCounter(HANDS)
@@ -258,5 +255,6 @@ func (g AssetConfigGenerator) generate() GenerationData {
 	frames.gems = gems.files
 	frames.blips = blips.files
 
+	g.updateCounters(HANDS)
 	return GenerationData{frames: frames, data: data}
 }
