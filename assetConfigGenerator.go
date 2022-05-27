@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"strings"
 )
 
 type AssetConfigGenerator struct {
@@ -133,6 +134,28 @@ func (g AssetConfigGenerator) getCounterForAttribute(attribute AttributeType) in
 	}
 }
 
+func (g AssetConfigGenerator) getCategoriesForAttribute(attribute AttributeType) []CategoryConfig {
+	switch attribute {
+	case HANDS:
+		return g.settings.hands.categories
+	case AURA:
+		return g.settings.aura.categories
+	case WATCHERS:
+		return g.settings.watchers.categories
+	case STAIRS:
+		return g.settings.stairs.categories
+	case ARCHES:
+		return g.settings.arches.categories
+	case GEMS:
+		return g.settings.gems.categories
+	case BLIPS:
+		return g.settings.blips.categories
+	default:
+		fmt.Println("Attribute not found when getting counter")
+		return make([]CategoryConfig, 0)
+	}
+}
+
 func (g AssetConfigGenerator) setCounterForAttribute(attribute AttributeType, value int16) {
 	switch attribute {
 	case HANDS:
@@ -174,6 +197,33 @@ func (g AssetConfigGenerator) updateCounters(attribute AttributeType) {
 		g.updateCounters(nextAttribute)
 	}
 	g.restartCountersIfNeeded()
+}
+
+func getFiles(attribute string, category string) []string {
+	images := make([]string, 200)
+	capitalisedAttributeName := strings.Title(attribute)
+	for i := 0; i < 200; i++ {
+		frameNumber := fmt.Sprintf("%05d", i)
+		images[i] = INPUT_ATTRIBUTES_DIR + "/" + capitalisedAttributeName + "/" + category + "/" + category + "_" + frameNumber
+	}
+	return images
+}
+
+func (g AssetConfigGenerator) findAttributeCategoryByCounter(attribute AttributeType) CategoryRenderingDetails {
+	var category CategoryConfig
+	counter := g.getCounterForAttribute(attribute)
+	categories := g.getCategoriesForAttribute(attribute)
+	for i := 0; i < len(categories); i++ {
+		if counter >= categories[i].starting && counter <= categories[i].ending {
+			category = categories[i]
+		}
+	}
+
+	return CategoryRenderingDetails{
+		name:   category.name,
+		files:  getFiles(string(attribute), category.name),
+		rarity: category.rarity,
+	}
 }
 
 func (g AssetConfigGenerator) init(maxAmount int16, namedManifest NamedManifest) {

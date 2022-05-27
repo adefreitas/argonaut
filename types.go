@@ -42,6 +42,12 @@ type CategoryConfig struct {
 	total    int16
 }
 
+type CategoryRenderingDetails struct {
+	name   string
+	files  []string
+	rarity float32
+}
+
 type AssetConfigGeneratorSetting struct {
 	categories []CategoryConfig
 }
