@@ -89,6 +89,93 @@ func (g AssetConfigGenerator) initialiseCountersAndSettings() {
 	g.initialiseCountersAndSettingForAttribute(BLIPS)
 }
 
+func getNextAttribute(attribute AttributeType) AttributeType {
+	switch attribute {
+	case HANDS:
+		return AURA
+	case AURA:
+		return WATCHERS
+	case WATCHERS:
+		return STAIRS
+	case STAIRS:
+		return ARCHES
+	case ARCHES:
+		return GEMS
+	case GEMS:
+		return BLIPS
+	case BLIPS:
+		return HANDS
+	default:
+		fmt.Println("Attribute not found when getting next attribute")
+		return HANDS
+	}
+}
+
+func (g AssetConfigGenerator) getCounterForAttribute(attribute AttributeType) int16 {
+	switch attribute {
+	case HANDS:
+		return g.counters.hands
+	case AURA:
+		return g.counters.aura
+	case WATCHERS:
+		return g.counters.watchers
+	case STAIRS:
+		return g.counters.stairs
+	case ARCHES:
+		return g.counters.arches
+	case GEMS:
+		return g.counters.gems
+	case BLIPS:
+		return g.counters.blips
+	default:
+		fmt.Println("Attribute not found when getting counter")
+		return 0
+	}
+}
+
+func (g AssetConfigGenerator) setCounterForAttribute(attribute AttributeType, value int16) {
+	switch attribute {
+	case HANDS:
+		g.counters.hands = value
+	case AURA:
+		g.counters.aura = value
+	case WATCHERS:
+		g.counters.watchers = value
+	case STAIRS:
+		g.counters.stairs = value
+	case ARCHES:
+		g.counters.arches = value
+	case GEMS:
+		g.counters.gems = value
+	case BLIPS:
+		g.counters.blips = value
+	default:
+		fmt.Println("Attribute not found when increasing counter")
+	}
+}
+
+func (g AssetConfigGenerator) updateCounters(attribute AttributeType) {
+	nextAttribute := getNextAttribute(attribute)
+	isAttributeIndexExceeded := nextAttribute == HANDS
+	currentCounterValue := g.getCounterForAttribute(attribute)
+	isAttributeCounterInAcceptableRange := currentCounterValue < g.maxAmount
+
+	fmt.Println("Updating counters for attribute", attribute, currentCounterValue)
+
+	if isAttributeIndexExceeded {
+		return
+	}
+
+	if isAttributeCounterInAcceptableRange {
+		fmt.Println("Updating attribute counter", attribute, currentCounterValue, currentCounterValue+1)
+		g.setCounterForAttribute(attribute, currentCounterValue+1)
+	} else {
+		g.setCounterForAttribute(attribute, 0)
+		g.updateCounters(nextAttribute)
+	}
+	g.restartCountersIfNeeded()
+}
+
 func (g AssetConfigGenerator) init(maxAmount int16, namedManifest NamedManifest) {
 	g.maxAmount = maxAmount
 	g.NamedManifest = namedManifest
