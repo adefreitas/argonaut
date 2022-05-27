@@ -8,6 +8,8 @@ import (
 	"image/png"
 	"os"
 	"sync"
+
+	ffmpeg "github.com/adefreitas/go-fluent-ffmpeg"
 )
 
 func extractFrame(framePath string) image.Image {
@@ -108,4 +110,14 @@ func combineAttributes(frames Frames, prefix int) {
 	fmt.Println("Waiting for paralel frame creation to finish for asset", prefix)
 	wg.Wait()
 	fmt.Println("Paralel frame creation done for asset", prefix)
+	fmt.Println("Generating video", prefix)
+	fileExtension := "%01d.jpeg"
+	framesInputPath := fmt.Sprintf("%s/raw/%d/%d_%s", OUTPUT_FRAMES_DIR, prefix, prefix, fileExtension)
+	audioInputPath := fmt.Sprintf("%s/bliptunes.mp3", INPUT_AUDIO_DIR)
+	outputVideoPath := fmt.Sprintf("%s/%d/%d_output.webm", OUTPUT_VIDEO_DIR, prefix, prefix)
+	ffmpeg.NewCommand("").
+		Input(framesInputPath, nil, "", false).
+		Input(audioInputPath, nil, "", false).
+		OutputPath(outputVideoPath).Run()
+	fmt.Println("Video generation finished for asset", prefix)
 }

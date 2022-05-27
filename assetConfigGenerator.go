@@ -253,6 +253,7 @@ func (g *AssetConfigGenerator) init(maxAmount int16, namedManifest NamedManifest
 func (g *AssetConfigGenerator) generate() GenerationData {
 	var data ManifestData
 	var frames Frames
+	// TODO: Look into using https://pkg.go.dev/github.com/fatih/structs@v1.1.0?utm_source=gopls
 	hands := g.findAttributeCategoryByCounter(HANDS)
 	aura := g.findAttributeCategoryByCounter(AURA)
 	watchers := g.findAttributeCategoryByCounter(WATCHERS)
