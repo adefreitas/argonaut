@@ -239,13 +239,13 @@ func (g *AssetConfigGenerator) generate() GenerationData {
 	arches := g.findAttributeCategoryByCounter(ARCHES)
 	gems := g.findAttributeCategoryByCounter(GEMS)
 	blips := g.findAttributeCategoryByCounter(BLIPS)
-	data.hands = ManifestAttributeData{name: hands.name, rarity: hands.rarity}
-	data.aura = ManifestAttributeData{name: aura.name, rarity: aura.rarity}
-	data.watchers = ManifestAttributeData{name: watchers.name, rarity: watchers.rarity}
-	data.stairs = ManifestAttributeData{name: stairs.name, rarity: stairs.rarity}
-	data.arches = ManifestAttributeData{name: arches.name, rarity: arches.rarity}
-	data.gems = ManifestAttributeData{name: gems.name, rarity: gems.rarity}
-	data.blips = ManifestAttributeData{name: blips.name, rarity: blips.rarity}
+	data.Hands = ManifestAttributeData{Name: hands.name, Rarity: hands.rarity}
+	data.Aura = ManifestAttributeData{Name: aura.name, Rarity: aura.rarity}
+	data.Watchers = ManifestAttributeData{Name: watchers.name, Rarity: watchers.rarity}
+	data.Stairs = ManifestAttributeData{Name: stairs.name, Rarity: stairs.rarity}
+	data.Arches = ManifestAttributeData{Name: arches.name, Rarity: arches.rarity}
+	data.Gems = ManifestAttributeData{Name: gems.name, Rarity: gems.rarity}
+	data.Blips = ManifestAttributeData{Name: blips.name, Rarity: blips.rarity}
 
 	frames.hands = hands.files
 	frames.aura = aura.files

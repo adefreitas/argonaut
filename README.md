@@ -19,6 +19,12 @@ Rewrite of Archon in Go. Composes frames from a group of given images, and gener
 go run .
 ```
 
+Rembmer to set your path like
+
+```
+export GOPATH=/home/${USER}/GO
+```
+
 ## License
 
 Not for commercial use

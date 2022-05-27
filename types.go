@@ -85,18 +85,18 @@ type Frames struct {
 }
 
 type ManifestAttributeData struct {
-	name   string
-	rarity float32
+	Name   string  `json:"name"`
+	Rarity float32 `json:"rariry"`
 }
 
 type ManifestData struct {
-	hands    ManifestAttributeData
-	aura     ManifestAttributeData
-	watchers ManifestAttributeData
-	stairs   ManifestAttributeData
-	arches   ManifestAttributeData
-	gems     ManifestAttributeData
-	blips    ManifestAttributeData
+	Hands    ManifestAttributeData
+	Aura     ManifestAttributeData
+	Watchers ManifestAttributeData
+	Stairs   ManifestAttributeData
+	Arches   ManifestAttributeData
+	Gems     ManifestAttributeData
+	Blips    ManifestAttributeData
 }
 
 type GenerationData struct {
