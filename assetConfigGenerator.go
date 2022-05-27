@@ -12,57 +12,67 @@ type AssetConfigGenerator struct {
 	maxAmount     int16
 }
 
-func (g AssetConfigGenerator) getCategorySettings(attributeManifest AttributeManifest, totalRarities float32) []CategoryConfig {
+func (g AssetConfigGenerator) getCategorySettings(categories []Category) []CategoryConfig {
 	var counter int16 = 0
-	var categoryConfigs = make([]CategoryConfig, len(attributeManifest.Categories))
-	fmt.Println(attributeManifest.Categories)
-	for i := 0; i < len(attributeManifest.Categories); i++ {
-		category := attributeManifest.Categories[i]
+	var categoryConfigs = make([]CategoryConfig, len(categories))
+	var totalRarities float32
+	for i := 0; i < len(categories); i++ {
+		totalRarities += categories[i].Rarity
+	}
+	fmt.Println(categories)
+	for i := 0; i < len(categories); i++ {
+		category := categories[i]
 		total := int16(math.Ceil(
 			float64(category.Rarity) / float64(totalRarities) * float64(g.maxAmount),
 		))
-		categoryConfigs[i] = CategoryConfig{name: category.Name, starting: counter, total: total, ending: counter + total, rarity: category.Rarity}
+		categoryConfigs[i] = CategoryConfig{
+			name:     category.Name,
+			starting: counter,
+			total:    total,
+			ending:   counter + total,
+			rarity:   category.Rarity,
+		}
 		counter = counter + total
 	}
 	return categoryConfigs
 }
 
-func (g AssetConfigGenerator) initialiseCountersAndSettingForAttribute(attribute AttributeType) {
-	var categories []Category
-	var totalRarities float32
-	for i := 0; i < len(categories); i++ {
-		totalRarities += categories[i].Rarity
+func (g AssetConfigGenerator) restartCountersIfNeeded() {
+	haveAllCountersReachedTheirMaximum := g.counters.arches == g.maxAmount &&
+		g.counters.aura == g.maxAmount &&
+		g.counters.blips == g.maxAmount &&
+		g.counters.gems == g.maxAmount &&
+		g.counters.hands == g.maxAmount &&
+		g.counters.stairs == g.maxAmount &&
+		g.counters.watchers == g.maxAmount
+
+	if haveAllCountersReachedTheirMaximum {
+		g.counters.aura = 0
+		g.counters.blips = 0
+		g.counters.gems = 0
+		g.counters.hands = 0
+		g.counters.stairs = 0
+		g.counters.watchers = 0
 	}
+}
+
+func (g AssetConfigGenerator) initialiseCountersAndSettingForAttribute(attribute AttributeType) {
 
 	switch attribute {
 	case HANDS:
-		categories = g.NamedManifest.hands.Categories
-		g.counters.hands = 0
-		g.settings.hands.categories = g.getCategorySettings(g.NamedManifest.hands, totalRarities)
+		g.settings.hands.categories = g.getCategorySettings(g.NamedManifest.hands.Categories)
 	case AURA:
-		categories = g.NamedManifest.aura.Categories
-		g.counters.aura = 0
-		g.settings.aura.categories = g.getCategorySettings(g.NamedManifest.aura, totalRarities)
+		g.settings.aura.categories = g.getCategorySettings(g.NamedManifest.aura.Categories)
 	case WATCHERS:
-		categories = g.NamedManifest.watchers.Categories
-		g.counters.watchers = 0
-		g.settings.watchers.categories = g.getCategorySettings(g.NamedManifest.watchers, totalRarities)
+		g.settings.watchers.categories = g.getCategorySettings(g.NamedManifest.watchers.Categories)
 	case STAIRS:
-		categories = g.NamedManifest.stairs.Categories
-		g.counters.stairs = 0
-		g.settings.stairs.categories = g.getCategorySettings(g.NamedManifest.stairs, totalRarities)
+		g.settings.stairs.categories = g.getCategorySettings(g.NamedManifest.stairs.Categories)
 	case ARCHES:
-		categories = g.NamedManifest.arches.Categories
-		g.counters.arches = 0
-		g.settings.arches.categories = g.getCategorySettings(g.NamedManifest.arches, totalRarities)
+		g.settings.arches.categories = g.getCategorySettings(g.NamedManifest.arches.Categories)
 	case GEMS:
-		categories = g.NamedManifest.gems.Categories
-		g.counters.gems = 0
-		g.settings.gems.categories = g.getCategorySettings(g.NamedManifest.gems, totalRarities)
+		g.settings.gems.categories = g.getCategorySettings(g.NamedManifest.gems.Categories)
 	case BLIPS:
-		categories = g.NamedManifest.blips.Categories
-		g.counters.blips = 0
-		g.settings.blips.categories = g.getCategorySettings(g.NamedManifest.blips, totalRarities)
+		g.settings.blips.categories = g.getCategorySettings(g.NamedManifest.blips.Categories)
 	default:
 		fmt.Println("Unknown attribute", attribute)
 	}
