@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func readManifest() {
+func readManifest() NamedManifest {
 	fmt.Println("Reading manifest")
 	dat, err := os.Open(INPUT_MANIFEST_DIR + "/manifest.json")
 
@@ -20,15 +20,33 @@ func readManifest() {
 
 	var attributeManifests []AttributeManifest
 
-	fmt.Println(string(byteValue))
 	json.Unmarshal(byteValue, &attributeManifests)
-	fmt.Println("Unmarshalled")
+
+	var namedManifest NamedManifest
+
 	for i := 0; i < len(attributeManifests); i++ {
-		fmt.Println("Attribute: " + attributeManifests[i].Attribute)
-		for j := 0; j < len(attributeManifests[i].Categories); j++ {
-			fmt.Println("Attribute category name: " + attributeManifests[i].Categories[j].Name)
-			fmt.Println("Attribute category rarity: ", attributeManifests[i].Categories[j].Rarity)
+		attributeManifest := attributeManifests[i]
+		key := attributeManifest.Attribute
+		switch key {
+		case HANDS:
+			namedManifest.hands = attributeManifest
+		case AURA:
+			namedManifest.aura = attributeManifest
+		case WATCHERS:
+			namedManifest.watchers = attributeManifest
+		case STAIRS:
+			namedManifest.stairs = attributeManifest
+		case ARCHES:
+			namedManifest.arches = attributeManifest
+		case GEMS:
+			namedManifest.gems = attributeManifest
+		case BLIPS:
+			namedManifest.blips = attributeManifest
+		default:
+			fmt.Println("Unknown attribute name", key)
 		}
 	}
-	// fmt.Println(attributeManifests)
+
+	fmt.Println("Named manifest", namedManifest)
+	return namedManifest
 }

@@ -6,5 +6,7 @@ import (
 
 func main() {
 	fmt.Println("Hello there! Starting processing")
-	readManifest()
+	manifest := readManifest()
+	var generator AssetConfigGenerator
+	generator.init(4, manifest)
 }
