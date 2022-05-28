@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+	"math/rand"
 	"fmt"
 	"math"
 	"strings"
@@ -34,6 +36,10 @@ func (g *AssetConfigGenerator) getCategorySettings(categories []Category) []Cate
 		}
 		counter = counter + total
 	}
+	rand.Seed(time.Now().Unix())
+	rand.Shuffle(len(categoryConfigs), func(i, j int) {
+		categoryConfigs[i], categoryConfigs[j] = categoryConfigs[j], categoryConfigs[i]
+})
 	return categoryConfigs
 }
 
