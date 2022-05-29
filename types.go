@@ -3,13 +3,19 @@ package main
 type AttributeType string
 
 const (
-	HANDS    AttributeType = "Hands"
-	AURA                   = "Aura"
-	WATCHERS               = "Watchers"
-	STAIRS                 = "Stairs"
-	ARCHES                 = "Arches"
-	GEMS                   = "Gems"
-	BLIPS                  = "Blips"
+	AURAS             AttributeType = "00_Auras"
+	WATCHERS                        = "01_Watchers"
+	GEMS                            = "02_Gems"
+	STAIRS                          = "03_Stairs"
+	BLIPS                           = "05_Blips"
+	BLIPS_AURA                      = "06_Blip_Aura"
+	ARCHES                          = "07_Arches"
+	HAND_TOP_LEFT                   = "07_Hand_Top_Left"
+	HAND_TOP_RIGHT                  = "08_Hand_Top_Right"
+	HAND_BOTTOM_LEFT                = "09_Hand_Bottom_Left"
+	HAND_BOTTOM_RIGHT               = "10_Hand_Bottom_Right"
+	ELEMENTS                        = "11_Elements"
+	MUSIC                           = "12_Music"
 )
 
 type Category struct {
@@ -25,13 +31,19 @@ type AttributeManifest struct {
 type Manifest []AttributeManifest
 
 type NamedManifest struct {
-	hands    AttributeManifest
-	aura     AttributeManifest
-	watchers AttributeManifest
-	stairs   AttributeManifest
-	arches   AttributeManifest
-	gems     AttributeManifest
-	blips    AttributeManifest
+	auras           AttributeManifest
+	watchers        AttributeManifest
+	gems            AttributeManifest
+	stairs          AttributeManifest
+	blips           AttributeManifest
+	blipAura        AttributeManifest
+	arches          AttributeManifest
+	handTopLeft     AttributeManifest
+	handTopRight    AttributeManifest
+	handBottomLeft  AttributeManifest
+	handBottomRight AttributeManifest
+	elements        AttributeManifest
+	music           AttributeManifest
 }
 
 type CategoryConfig struct {
@@ -48,40 +60,47 @@ type CategoryRenderingDetails struct {
 	rarity float32
 }
 
+type CategoryAudioDetails struct {
+	name           string
+	audioInputPath string
+	rarity         float32
+}
+
 type AssetConfigGeneratorSetting struct {
 	categories []CategoryConfig
 }
 
 type AssetConfigGeneratorSettings struct {
-	hands    AssetConfigGeneratorSetting
-	aura     AssetConfigGeneratorSetting
-	watchers AssetConfigGeneratorSetting
-	stairs   AssetConfigGeneratorSetting
-	arches   AssetConfigGeneratorSetting
-	gems     AssetConfigGeneratorSetting
-	blips    AssetConfigGeneratorSetting
-}
-
-type AssetConfigGeneratorCounters struct {
-	hands    int16
-	aura     int16
-	watchers int16
-	stairs   int16
-	arches   int16
-	gems     int16
-	blips    int16
+	auras           AssetConfigGeneratorSetting
+	watchers        AssetConfigGeneratorSetting
+	gems            AssetConfigGeneratorSetting
+	stairs          AssetConfigGeneratorSetting
+	blips           AssetConfigGeneratorSetting
+	blipAura        AssetConfigGeneratorSetting
+	arches          AssetConfigGeneratorSetting
+	handTopLeft     AssetConfigGeneratorSetting
+	handTopRight    AssetConfigGeneratorSetting
+	handBottomLeft  AssetConfigGeneratorSetting
+	handBottomRight AssetConfigGeneratorSetting
+	elements        AssetConfigGeneratorSetting
+	music           AssetConfigGeneratorSetting
 }
 
 type AttributeFrames []string
 
 type Frames struct {
-	hands    AttributeFrames
-	aura     AttributeFrames
-	watchers AttributeFrames
-	stairs   AttributeFrames
-	arches   AttributeFrames
-	gems     AttributeFrames
-	blips    AttributeFrames
+	auras           AttributeFrames
+	watchers        AttributeFrames
+	stairs          AttributeFrames
+	blips           AttributeFrames
+	blipAura        AttributeFrames
+	arches          AttributeFrames
+	handTopLeft     AttributeFrames
+	handTopRight    AttributeFrames
+	handBottomLeft  AttributeFrames
+	handBottomRight AttributeFrames
+	gems            AttributeFrames
+	elements        AttributeFrames
 }
 
 type ManifestAttributeData struct {
@@ -90,16 +109,23 @@ type ManifestAttributeData struct {
 }
 
 type ManifestData struct {
-	Hands    ManifestAttributeData
-	Aura     ManifestAttributeData
-	Watchers ManifestAttributeData
-	Stairs   ManifestAttributeData
-	Arches   ManifestAttributeData
-	Gems     ManifestAttributeData
-	Blips    ManifestAttributeData
+	Auras           ManifestAttributeData
+	Watchers        ManifestAttributeData
+	Stairs          ManifestAttributeData
+	Blips           ManifestAttributeData
+	BlipAura        ManifestAttributeData
+	Arches          ManifestAttributeData
+	HandTopLeft     ManifestAttributeData
+	HandTopRight    ManifestAttributeData
+	HandBottomLeft  ManifestAttributeData
+	HandBottomRight ManifestAttributeData
+	Gems            ManifestAttributeData
+	Elements        ManifestAttributeData
+	Music           ManifestAttributeData
 }
 
 type GenerationData struct {
-	frames Frames
-	data   ManifestData
+	frames         Frames
+	data           ManifestData
+	audioInputPath string
 }

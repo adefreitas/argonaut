@@ -8,7 +8,7 @@ import (
 )
 
 func work(generator *AssetConfigGenerator, index int) {
-	generationData := generator.generate()
+	generationData := generator.generate(int16(index))
 	outputFramesDirPath := fmt.Sprintf("%s/raw/%d", OUTPUT_FRAMES_DIR, index)
 	outputVideoDirPath := fmt.Sprintf("%s/%d", OUTPUT_VIDEO_DIR, index)
 	outputManifestPath := fmt.Sprintf("%s/%d.json", outputVideoDirPath, index)
@@ -45,5 +45,5 @@ func work(generator *AssetConfigGenerator, index int) {
 		fmt.Println("Couldnt write file", err)
 	}
 
-	combineAttributes(generationData.frames, index)
+	combineAttributes(generationData.frames, generationData.audioInputPath, index)
 }

@@ -45,12 +45,18 @@ func extractBackground() image.Image {
 func combineAttributesForFrame(frames Frames, prefix int, frameNumber int, wg *sync.WaitGroup) {
 	// defer wg.Done()
 	generatedFrames := make([]image.Image, 0)
-	generatedFrames = append(generatedFrames, extractFrame(frames.aura[frameNumber]))
-	generatedFrames = append(generatedFrames, extractFrame(frames.blips[frameNumber]))
-	generatedFrames = append(generatedFrames, extractFrame(frames.gems[frameNumber]))
-	generatedFrames = append(generatedFrames, extractFrame(frames.hands[frameNumber]))
-	generatedFrames = append(generatedFrames, extractFrame(frames.stairs[frameNumber]))
+	generatedFrames = append(generatedFrames, extractFrame(frames.auras[frameNumber]))
 	generatedFrames = append(generatedFrames, extractFrame(frames.watchers[frameNumber]))
+	generatedFrames = append(generatedFrames, extractFrame(frames.gems[frameNumber]))
+	generatedFrames = append(generatedFrames, extractFrame(frames.stairs[frameNumber]))
+	generatedFrames = append(generatedFrames, extractFrame(frames.blips[frameNumber]))
+	generatedFrames = append(generatedFrames, extractFrame(frames.blipAura[frameNumber]))
+	generatedFrames = append(generatedFrames, extractFrame(frames.arches[frameNumber]))
+	generatedFrames = append(generatedFrames, extractFrame(frames.handTopLeft[frameNumber]))
+	generatedFrames = append(generatedFrames, extractFrame(frames.handTopRight[frameNumber]))
+	generatedFrames = append(generatedFrames, extractFrame(frames.handBottomLeft[frameNumber]))
+	generatedFrames = append(generatedFrames, extractFrame(frames.handBottomRight[frameNumber]))
+	generatedFrames = append(generatedFrames, extractFrame(frames.elements[frameNumber]))
 
 	bgImage := image.NewRGBA(image.Rect(0, 0, 1080, 1920))
 
@@ -71,10 +77,10 @@ func combineAttributesForFrame(frames Frames, prefix int, frameNumber int, wg *s
 	}
 }
 
-func combineAttributes(frames Frames, prefix int) {
+func combineAttributes(frames Frames, audioInputPath string, prefix int) {
 	fmt.Println("Generating frames for asset", prefix)
 	var wg sync.WaitGroup
-	paralelization := 20
+	paralelization := 10
 	wg.Add(paralelization)
 	c := make(chan int)
 	lo, hi := 0, 199
@@ -97,9 +103,6 @@ func combineAttributes(frames Frames, prefix int) {
 			}
 		}(c)
 	}
-	// for i = 0; i < 200; i++ {
-	// 	go combineAttributesForFrame(frames, prefix, i, &wg)
-	// }
 
 	// Adding frame numbers to the channel to be consumed by the loop above
 	for _, a := range frameNumbers {
@@ -110,14 +113,15 @@ func combineAttributes(frames Frames, prefix int) {
 	fmt.Println("Waiting for paralel frame creation to finish for asset", prefix)
 	wg.Wait()
 	fmt.Println("Paralel frame creation done for asset", prefix)
-	fmt.Println("Generating video", prefix)
+	fmt.Println("Generating video", prefix, audioInputPath)
 	fileExtension := "%01d.jpeg"
 	framesInputPath := fmt.Sprintf("%s/raw/%d/%d_%s", OUTPUT_FRAMES_DIR, prefix, prefix, fileExtension)
-	audioInputPath := fmt.Sprintf("%s/bliptunes.mp3", INPUT_AUDIO_DIR)
+	// audioInputPath := fmt.Sprintf("%s/bliptunes.mp3", INPUT_AUDIO_DIR)
 	outputVideoPath := fmt.Sprintf("%s/%d/%d_output.webm", OUTPUT_VIDEO_DIR, prefix, prefix)
 	ffmpeg.NewCommand("").
 		Input(framesInputPath, nil, "", false).
 		Input(audioInputPath, nil, "", false).
-		OutputPath(outputVideoPath).Run()
+		OutputPath(outputVideoPath).
+		Run()
 	fmt.Println("Video generation finished for asset", prefix)
 }

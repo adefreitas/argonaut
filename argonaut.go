@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"sync"
 	"time"
 )
@@ -9,15 +10,15 @@ import (
 func main() {
 	t1 := time.Now()
 	fmt.Println("Hello there! Starting processing")
+	os.RemoveAll(OUTPUT_DIR)
 	manifest := readManifest()
 	var generator AssetConfigGenerator
-	var total int = 10
-	generator.init(int16(total), manifest)
+	var total int = 6
+	fmt.Println("Manifest is", manifest)
+	generator.init(int16(total), *manifest)
 
-	// fmt.Println(generator.generate())
-	// generator.generate()
 	var wg sync.WaitGroup
-	paralelization := 3
+	paralelization := 4
 	wg.Add(paralelization)
 	c := make(chan int)
 	lo, hi := 0, total

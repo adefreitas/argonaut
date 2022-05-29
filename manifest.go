@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func readManifest() NamedManifest {
+func readManifest() *NamedManifest {
 	fmt.Println("Reading manifest")
 	dat, err := os.Open(INPUT_MANIFEST_DIR + "/manifest.json")
 
@@ -20,6 +20,7 @@ func readManifest() NamedManifest {
 
 	var attributeManifests []AttributeManifest
 
+	// fmt.Println(string(byteValue))
 	json.Unmarshal(byteValue, &attributeManifests)
 
 	var namedManifest NamedManifest
@@ -28,10 +29,20 @@ func readManifest() NamedManifest {
 		attributeManifest := attributeManifests[i]
 		key := attributeManifest.Attribute
 		switch key {
-		case HANDS:
-			namedManifest.hands = attributeManifest
-		case AURA:
-			namedManifest.aura = attributeManifest
+		case HAND_TOP_LEFT:
+			namedManifest.handTopLeft = attributeManifest
+		case HAND_TOP_RIGHT:
+			namedManifest.handTopRight = attributeManifest
+		case HAND_BOTTOM_LEFT:
+			namedManifest.handBottomLeft = attributeManifest
+		case HAND_BOTTOM_RIGHT:
+			namedManifest.handBottomRight = attributeManifest
+		case AURAS:
+			namedManifest.auras = attributeManifest
+		case BLIPS_AURA:
+			namedManifest.blipAura = attributeManifest
+		case ELEMENTS:
+			namedManifest.elements = attributeManifest
 		case WATCHERS:
 			namedManifest.watchers = attributeManifest
 		case STAIRS:
@@ -42,10 +53,13 @@ func readManifest() NamedManifest {
 			namedManifest.gems = attributeManifest
 		case BLIPS:
 			namedManifest.blips = attributeManifest
+		case MUSIC:
+			namedManifest.music = attributeManifest
 		default:
 			fmt.Println("Unknown attribute name", key)
 		}
 	}
+	fmt.Println("Hand bottom left manifest", &namedManifest.handBottomLeft)
 
-	return namedManifest
+	return &namedManifest
 }
