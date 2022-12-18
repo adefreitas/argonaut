@@ -1,6 +1,9 @@
 # About
 
-Rewrite of Archon in Go. Composes frames from a group of given images, and generates a video out of them
+Rewrite of [Archon](https://github.com/adefreitas/archon) in Go. Composes frames from a group of given images, and generates a video out of them
+
+## Background
+Originally wrote Archon in Typescript for covenience being familiar with TypeScript, but decided to give Go a first try and rewrote the project in Go while picking it up along the way. I did not document the performance improvements but was able to generate more videos per hour than with the TypeScript implementation
 
 ## External dependencies
 
@@ -19,7 +22,7 @@ Rewrite of Archon in Go. Composes frames from a group of given images, and gener
 go run .
 ```
 
-Rembmer to set your path like
+Remember to set your path like
 
 ```
 export GOPATH=/home/${USER}/GO
