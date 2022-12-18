@@ -28,9 +28,9 @@ Remember to set your path like
 export GOPATH=/home/${USER}/GO
 ```
 
-## License
+## Disclaimer
 
-Not for commercial use
+Not for commercial use of any kind. Reach out for enquiries about licensing.
 
 ## Name inspiration
 
